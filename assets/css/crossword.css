@@ -1,0 +1,473 @@
+/* ==========================================================================
+   The Legend of CPU — crossword.css
+   Tabuleiro, pista ativa e painel de pistas.
+   Estados das casas:
+   .in-word (palavra selecionada) · .is-active (casa ativa) · .is-filled
+   .is-correct (letra de palavra confirmada) · .is-incorrect (palavra com erro)
+   ========================================================================== */
+
+.view-head {
+  margin-bottom: 18px;
+}
+
+.crossword-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(300px, 400px);
+  gap: 24px;
+  align-items: start;
+}
+
+.board-column {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  min-width: 0;
+}
+
+/* ---------- Pista ativa ---------- */
+.active-clue {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--cyan);
+  border-radius: var(--radius);
+}
+
+.active-clue-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.active-clue-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 4px 10px;
+  margin-bottom: 4px;
+}
+
+.active-clue-number {
+  font-family: var(--font-mono);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.active-clue-dir {
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.active-clue-meta {
+  font-size: 0.82rem;
+  color: var(--text-mute);
+}
+
+.active-clue-text {
+  margin: 0;
+  font-size: 1.02rem;
+}
+
+.active-clue-actions {
+  display: flex;
+  flex-shrink: 0;
+  gap: 6px;
+}
+
+.icon-btn {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  padding: 0;
+  color: var(--text);
+  background: var(--bg-3);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-sm);
+}
+
+.icon-btn:hover {
+  background: var(--bg-4);
+}
+
+.icon-btn[aria-disabled="true"] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+/* ---------- Tabuleiro ---------- */
+.board-frame {
+  padding: 10px;
+  background: var(--bg-0);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.board-scroll {
+  overflow: auto;
+  padding: 4px;
+  overscroll-behavior: contain;
+  -webkit-overflow-scrolling: touch;
+}
+
+.board {
+  --cell: 36px;
+  --gap: 3px;
+  display: grid;
+  grid-template-columns: repeat(var(--cols), var(--cell));
+  grid-template-rows: repeat(var(--rows), var(--cell));
+  gap: var(--gap);
+  width: max-content;
+  margin: 0 auto;
+}
+
+.cell {
+  position: relative;
+  background: #172449;
+  border: 1px solid #2f4683;
+  border-radius: 5px;
+  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.35);
+  scroll-margin: 90px 16px 16px;
+  transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.cell-input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  padding: 0;
+  font-family: var(--font-ui);
+  font-size: calc(var(--cell) * 0.52);
+  font-weight: 800;
+  line-height: 1;
+  text-align: center;
+  text-transform: uppercase;
+  color: var(--text);
+  background: transparent;
+  border: 0;
+  border-radius: inherit;
+  caret-color: transparent;
+  cursor: pointer;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+.cell-input:focus,
+.cell-input:focus-visible {
+  outline: none;
+}
+
+.cell-num {
+  position: absolute;
+  top: 1px;
+  left: 3px;
+  z-index: 1;
+  font-family: var(--font-mono);
+  font-size: max(9px, calc(var(--cell) * 0.26));
+  font-weight: 700;
+  line-height: 1;
+  color: var(--text-mute);
+  pointer-events: none;
+}
+
+/* Palavra selecionada */
+.cell.in-word {
+  background: #0f3a52;
+  border-color: var(--cyan);
+}
+
+/* Casa ativa */
+.cell.is-active {
+  background: var(--gold);
+  border-color: #fff1c2;
+  box-shadow: inset 0 -3px 0 rgba(120, 80, 0, 0.35);
+}
+
+.cell.is-active .cell-input {
+  color: #1b1300;
+}
+
+.cell.is-active .cell-num {
+  color: #5c4300;
+}
+
+/* Foco visível: contorno extra quando o tabuleiro está com o foco do teclado */
+.cell:focus-within {
+  outline: 3px solid #ffffff;
+  outline-offset: 1px;
+  z-index: 2;
+}
+
+/* Seta da direção ativa na casa ativa */
+.cell-arrow {
+  position: absolute;
+  display: none;
+  width: 0;
+  height: 0;
+  pointer-events: none;
+}
+
+.board[data-dir="H"] .cell.is-active .cell-arrow {
+  display: block;
+  top: 50%;
+  right: -7px;
+  margin-top: -5px;
+  border-top: 5px solid transparent;
+  border-bottom: 5px solid transparent;
+  border-left: 6px solid var(--gold);
+  z-index: 3;
+}
+
+.board[data-dir="V"] .cell.is-active .cell-arrow {
+  display: block;
+  left: 50%;
+  bottom: -7px;
+  margin-left: -5px;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-top: 6px solid var(--gold);
+  z-index: 3;
+}
+
+/* Resultado da conferência nas casas (o resultado definitivo fica nas pistas) */
+.cell.is-correct .cell-input {
+  color: var(--green);
+}
+
+.cell.is-correct.is-active .cell-input {
+  color: #0b3d1f;
+}
+
+.cell.is-correct::after {
+  content: "";
+  position: absolute;
+  right: 2px;
+  bottom: 2px;
+  width: 0;
+  height: 0;
+  border-left: 7px solid transparent;
+  border-bottom: 7px solid var(--green);
+  pointer-events: none;
+}
+
+.cell.is-incorrect::after {
+  content: "";
+  position: absolute;
+  left: 18%;
+  right: 18%;
+  bottom: 4px;
+  height: 2px;
+  background: repeating-linear-gradient(90deg, var(--red) 0 4px, transparent 4px 7px);
+  pointer-events: none;
+}
+
+.board.is-locked .cell-input {
+  cursor: default;
+}
+
+/* ---------- Ajuda de comandos ---------- */
+.board-help {
+  margin: 0;
+  font-size: 0.86rem;
+  line-height: 1.9;
+  color: var(--text-mute);
+}
+
+.board-help kbd {
+  font-size: 0.78em;
+}
+
+/* ---------- Painel de pistas ---------- */
+.clues {
+  position: sticky;
+  top: 84px;
+  display: grid;
+  gap: 18px;
+  max-height: calc(100vh - 104px);
+  padding: 14px;
+  overflow-y: auto;
+  background: var(--bg-2);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+
+.clue-group-title {
+  margin: 0 0 8px;
+  font-size: 0.92rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.clue-list {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.clue-btn {
+  display: grid;
+  grid-template-columns: 2.1em minmax(0, 1fr) auto;
+  gap: 8px;
+  width: 100%;
+  padding: 9px 10px;
+  text-align: left;
+  background: transparent;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  transition: background-color 0.15s, border-color 0.15s;
+}
+
+.clue-btn:hover {
+  background: var(--bg-3);
+}
+
+.clue-num {
+  font-family: var(--font-mono);
+  font-weight: 800;
+  color: var(--gold);
+}
+
+.clue-text {
+  display: block;
+}
+
+.clue-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 10px;
+  margin-top: 2px;
+  font-size: 0.8rem;
+  color: var(--text-mute);
+}
+
+.clue-answer {
+  font-weight: 700;
+  color: var(--green);
+}
+
+.clue-item.is-active .clue-btn {
+  background: rgba(56, 225, 255, 0.12);
+  border-color: var(--cyan);
+}
+
+.clue-item.is-cross .clue-btn {
+  border-color: var(--line-strong);
+  border-style: dashed;
+}
+
+.clue-status {
+  display: inline-flex;
+  align-items: center;
+  align-self: start;
+  gap: 4px;
+  padding: 2px 8px;
+  font-size: 0.74rem;
+  font-weight: 700;
+  white-space: nowrap;
+  border-radius: 999px;
+}
+
+.clue-status[data-status="unchecked"] {
+  display: none;
+}
+
+.clue-status[data-status="correct"] {
+  color: var(--green);
+  background: var(--green-soft);
+}
+
+.clue-status[data-status="incorrect"] {
+  color: var(--red);
+  background: var(--red-soft);
+}
+
+.clue-status[data-status="incomplete"] {
+  color: var(--gold);
+  background: var(--gold-soft);
+}
+
+.clue-status[data-status="correct"] .clue-status-icon::before {
+  content: "✓";
+}
+
+.clue-status[data-status="incorrect"] .clue-status-icon::before {
+  content: "✗";
+}
+
+.clue-status[data-status="incomplete"] .clue-status-icon::before {
+  content: "…";
+}
+
+/* ---------- Erro de validação da grade ---------- */
+.grid-error {
+  padding: 16px;
+  color: var(--text);
+  background: var(--red-soft);
+  border: 1px solid var(--red);
+  border-radius: var(--radius);
+}
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 960px) {
+  .crossword-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .clues {
+    position: static;
+    max-height: none;
+    overflow: visible;
+  }
+}
+
+@media (max-width: 860px) {
+  /* No celular a pista ativa acompanha a rolagem, logo acima do tabuleiro */
+  .active-clue {
+    position: sticky;
+    top: 0;
+    z-index: 10;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
+  }
+
+  .cell {
+    scroll-margin: 130px 12px 12px;
+  }
+}
+
+@media (max-width: 520px) {
+  .board-frame {
+    padding: 4px;
+  }
+
+  .board-scroll {
+    padding: 2px;
+  }
+
+  .active-clue {
+    padding: 10px;
+    gap: 8px;
+  }
+
+  .active-clue-text {
+    font-size: 0.95rem;
+  }
+
+  .icon-btn {
+    width: 38px;
+    height: 38px;
+  }
+
+  .board-help {
+    display: none; /* atalhos de teclado físico; no celular as instruções ficam em "Como jogar" */
+  }
+}

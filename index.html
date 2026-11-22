@@ -10,6 +10,7 @@
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/crossword.css">
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -49,9 +50,59 @@
     </section>
 
     <section class="view" data-view="cruzadinha" aria-labelledby="titulo-cruzadinha" hidden>
-      <div class="container">
-        <h2 id="titulo-cruzadinha">Painel do Núcleo</h2>
-        <p class="lead">Missão principal: restaure os 16 fragmentos preenchendo a cruzadinha.</p>
+      <div class="container" id="crossword">
+        <header class="view-head">
+          <h2 id="titulo-cruzadinha">Painel do Núcleo</h2>
+          <p class="lead">Missão principal: restaure os 16 fragmentos de conhecimento preenchendo a cruzadinha.</p>
+        </header>
+
+        <div class="crossword-layout">
+          <div class="board-column">
+            <!-- Pista ativa: número, direção e texto da palavra selecionada -->
+            <div class="active-clue" id="active-clue">
+              <div class="active-clue-main">
+                <div class="active-clue-head">
+                  <span class="active-clue-number" id="ac-number">–</span>
+                  <span class="active-clue-dir" id="ac-dir">–</span>
+                  <span class="active-clue-meta" id="ac-meta"></span>
+                </div>
+                <p class="active-clue-text" id="ac-text">Selecione uma pista ou uma casa do tabuleiro.</p>
+              </div>
+              <div class="active-clue-actions">
+                <button type="button" class="icon-btn" id="ac-prev" aria-label="Palavra anterior" title="Palavra anterior (Shift+Enter)"><span aria-hidden="true">◀</span></button>
+                <button type="button" class="icon-btn" id="ac-toggle" aria-label="Alternar direção" title="Alternar direção (Espaço)"><span aria-hidden="true">⇄</span></button>
+                <button type="button" class="icon-btn" id="ac-next" aria-label="Próxima palavra" title="Próxima palavra (Enter)"><span aria-hidden="true">▶</span></button>
+              </div>
+            </div>
+
+            <!-- Tabuleiro: as casas são criadas pelo crossword.js a partir do data.js -->
+            <div class="board-frame">
+              <div class="board-scroll" id="board-scroll">
+                <div class="board" id="board" role="group" aria-label="Tabuleiro da cruzadinha"></div>
+              </div>
+            </div>
+
+            <p class="board-help" id="board-help">
+              <strong>Comandos:</strong> digite as letras ·
+              <kbd>←</kbd><kbd>↑</kbd><kbd>→</kbd><kbd>↓</kbd> navegam ·
+              <kbd>Espaço</kbd> ou novo clique alterna a direção ·
+              <kbd>Enter</kbd> próxima palavra · <kbd>Shift</kbd>+<kbd>Enter</kbd> anterior ·
+              <kbd>Backspace</kbd> apaga e volta · <kbd>Tab</kbd> sai do tabuleiro
+            </p>
+          </div>
+
+          <!-- Painel de pistas -->
+          <aside class="clues" id="clues" aria-label="Pistas">
+            <section class="clue-group" aria-labelledby="clues-h-title">
+              <h3 class="clue-group-title" id="clues-h-title">Horizontais <span aria-hidden="true">→</span></h3>
+              <ul class="clue-list" id="clues-H"></ul>
+            </section>
+            <section class="clue-group" aria-labelledby="clues-v-title">
+              <h3 class="clue-group-title" id="clues-v-title">Verticais <span aria-hidden="true">↓</span></h3>
+              <ul class="clue-list" id="clues-V"></ul>
+            </section>
+          </aside>
+        </div>
       </div>
     </section>
 
@@ -96,6 +147,9 @@
   <!-- Scripts clássicos (sem módulos) para funcionar também abrindo o arquivo direto, sem servidor -->
   <script src="assets/js/utils.js" defer></script>
   <script src="assets/js/storage.js" defer></script>
+  <script src="assets/js/data.js" defer></script>
+  <script src="assets/js/crossword-model.js" defer></script>
+  <script src="assets/js/crossword.js" defer></script>
   <script src="assets/js/app.js" defer></script>
 </body>
 </html>
