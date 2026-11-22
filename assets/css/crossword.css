@@ -274,6 +274,11 @@
   box-shadow: 0 0 10px rgba(255, 95, 207, 0.25), inset 0 -3px 0 rgba(0, 0, 0, 0.3);
 }
 
+/* Número mais claro sobre a palavra selecionada (contraste de 6,5:1 ou mais) */
+.cell.in-word .cell-num {
+  color: #d6e4ff;
+}
+
 /* Casa ativa */
 .cell.is-active,
 .board[data-dir="V"] .cell.is-active {
