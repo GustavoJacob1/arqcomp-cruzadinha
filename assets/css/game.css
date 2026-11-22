@@ -568,6 +568,10 @@
   grid-column: 1 / -1;
 }
 
+.guide > * {
+  min-width: 0;
+}
+
 .guide-icon {
   display: grid;
   place-items: center;
@@ -677,8 +681,9 @@ code {
 }
 
 @media (max-width: 860px) {
+  /* minmax(0, 1fr): deixa o cartão encolher; a tabela rola dentro do .table-wrap */
   .guide {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .sound-toggle {

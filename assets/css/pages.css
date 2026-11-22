@@ -223,7 +223,7 @@
 /* ---------- Responsivo ---------- */
 @media (max-width: 960px) {
   .hero {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
     gap: 8px;
   }
 
@@ -238,7 +238,7 @@
 
 @media (max-width: 560px) {
   .quest-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .hero-art {
