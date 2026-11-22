@@ -10,7 +10,10 @@
   <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
   <link rel="stylesheet" href="assets/css/base.css">
   <link rel="stylesheet" href="assets/css/layout.css">
+  <link rel="stylesheet" href="assets/css/components.css">
+  <link rel="stylesheet" href="assets/css/pages.css">
   <link rel="stylesheet" href="assets/css/crossword.css">
+  <link rel="stylesheet" href="assets/css/effects.css">
 </head>
 <body>
   <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
@@ -43,16 +46,75 @@
 
     <section class="view" data-view="inicio" aria-labelledby="titulo-inicio">
       <div class="container">
-        <h1 id="titulo-inicio">The Legend of CPU — A Cruzada dos Bits</h1>
-        <p class="lead">O Reino de Silício parou. Um surto de Ruído embaralhou os bits do Núcleo e apagou os 16 Fragmentos de Conhecimento que mantinham tudo funcionando. Decifre as pistas, preencha o Painel do Núcleo e devolva o clock a este mundo.</p>
-        <p><a class="btn btn-primary" href="#cruzadinha">Começar a cruzada</a></p>
+        <div class="hero">
+          <div class="hero-text">
+            <p class="eyebrow">Arquitetura Computacional · jogo de estudo</p>
+            <!-- O logotipo é desenhado em pixel art pelo pixel.js; o texto continua disponível para leitores de tela -->
+            <h1 class="logo" id="titulo-inicio">
+              <span class="logo-line logo-small" data-pixel-text="THE LEGEND OF">The Legend of</span>
+              <span class="logo-line logo-big" data-pixel-text="CPU">CPU</span>
+              <span class="logo-line logo-sub" data-pixel-text="A CRUZADA DOS BITS">— A Cruzada dos Bits</span>
+            </h1>
+            <p class="lead">O Reino de Silício parou. Um surto de Ruído embaralhou os bits do Núcleo e apagou os <strong>16 Fragmentos de Conhecimento</strong> que mantinham tudo funcionando. Decifre as pistas, preencha o Painel do Núcleo e devolva o clock a este mundo.</p>
+            <div class="hero-actions">
+              <a class="btn btn-primary btn-lg" href="#cruzadinha" id="home-cta"><span aria-hidden="true">▶</span> <span id="home-cta-text">Começar a cruzada</span></a>
+              <a class="btn btn-ghost" href="#como-jogar">Como jogar</a>
+            </div>
+            <p class="hero-progress" id="home-progress">Sua jornada ainda não começou: 0 de 16 fragmentos restaurados.</p>
+          </div>
+
+          <div class="hero-art">
+            <!-- Núcleo do reino: cada bit acende quando uma palavra é confirmada -->
+            <div class="core" id="core" aria-hidden="true">
+              <span class="core-bit" style="--i:0"></span><span class="core-bit" style="--i:1"></span>
+              <span class="core-bit" style="--i:2"></span><span class="core-bit" style="--i:3"></span>
+              <span class="core-bit" style="--i:4"></span><span class="core-bit" style="--i:5"></span>
+              <span class="core-bit" style="--i:6"></span><span class="core-bit" style="--i:7"></span>
+              <span class="core-bit" style="--i:8"></span><span class="core-bit" style="--i:9"></span>
+              <span class="core-bit" style="--i:10"></span><span class="core-bit" style="--i:11"></span>
+              <span class="core-bit" style="--i:12"></span><span class="core-bit" style="--i:13"></span>
+              <span class="core-bit" style="--i:14"></span><span class="core-bit" style="--i:15"></span>
+            </div>
+            <div class="mascot" data-sprite="byte" aria-hidden="true"></div>
+            <p class="speech"><strong>Byte:</strong> <span id="speech-text">Cada cruzamento é uma pista grátis: uma letra serve para duas palavras!</span></p>
+          </div>
+        </div>
+
+        <h2 class="section-title">Missões</h2>
+        <div class="quest-grid">
+          <a class="quest-card hud-corners" href="#cruzadinha">
+            <span class="chip chip-gold quest-tag">Principal</span>
+            <span class="quest-icon" data-icon="grid"></span>
+            <span class="quest-title">Painel do Núcleo</span>
+            <span class="quest-desc">A cruzadinha com os 16 conceitos. Restaure todos os fragmentos.</span>
+            <span class="quest-status" id="quest-cruzadinha">16 fragmentos esperando por você</span>
+          </a>
+          <a class="quest-card hud-corners" href="#flashcards">
+            <span class="quest-icon" data-icon="cards"></span>
+            <span class="quest-title">Inventário do Conhecimento</span>
+            <span class="quest-desc">Flashcards para revisar cada conceito no seu ritmo.</span>
+            <span class="quest-status" id="quest-flashcards">16 cards no inventário</span>
+          </a>
+          <a class="quest-card hud-corners" href="#quiz">
+            <span class="quest-icon" data-icon="bolt"></span>
+            <span class="quest-title">Desafio dos Circuitos</span>
+            <span class="quest-desc">Quiz de situações que pedem entendimento, não decoreba.</span>
+            <span class="quest-status" id="quest-quiz">14 questões</span>
+          </a>
+          <a class="quest-card hud-corners" href="#associacao">
+            <span class="quest-icon" data-icon="link"></span>
+            <span class="quest-title">Conecte os Componentes</span>
+            <span class="quest-desc">Ligue cada componente à função que ele cumpre.</span>
+            <span class="quest-status" id="quest-associacao">Rodadas de 6 pares</span>
+          </a>
+        </div>
       </div>
     </section>
 
     <section class="view" data-view="cruzadinha" aria-labelledby="titulo-cruzadinha" hidden>
       <div class="container" id="crossword">
         <header class="view-head">
-          <h2 id="titulo-cruzadinha">Painel do Núcleo</h2>
+          <h2 class="view-title" id="titulo-cruzadinha">Painel do Núcleo</h2>
           <p class="lead">Missão principal: restaure os 16 fragmentos de conhecimento preenchendo a cruzadinha.</p>
         </header>
 
@@ -76,10 +138,12 @@
             </div>
 
             <!-- Tabuleiro: as casas são criadas pelo crossword.js a partir do data.js -->
-            <div class="board-frame">
+            <div class="board-frame" id="board-frame">
+              <div class="board-plate" aria-hidden="true"><span data-pixel-text="PAINEL DO NUCLEO"></span></div>
               <div class="board-scroll" id="board-scroll">
                 <div class="board" id="board" role="group" aria-label="Tabuleiro da cruzadinha"></div>
               </div>
+              <p class="board-scroll-hint" id="board-scroll-hint" hidden><span aria-hidden="true">⇆</span> Arraste o painel para os lados para ver todas as casas</p>
             </div>
 
             <p class="board-help" id="board-help">
@@ -108,28 +172,28 @@
 
     <section class="view" data-view="flashcards" aria-labelledby="titulo-flashcards" hidden>
       <div class="container">
-        <h2 id="titulo-flashcards">Inventário do Conhecimento</h2>
+        <h2 class="view-title" id="titulo-flashcards">Inventário do Conhecimento</h2>
         <p class="lead">Flashcards com perguntas na frente e explicações no verso.</p>
       </div>
     </section>
 
     <section class="view" data-view="quiz" aria-labelledby="titulo-quiz" hidden>
       <div class="container">
-        <h2 id="titulo-quiz">Desafio dos Circuitos</h2>
+        <h2 class="view-title" id="titulo-quiz">Desafio dos Circuitos</h2>
         <p class="lead">Questões de múltipla escolha que testam o entendimento dos conceitos.</p>
       </div>
     </section>
 
     <section class="view" data-view="associacao" aria-labelledby="titulo-associacao" hidden>
       <div class="container">
-        <h2 id="titulo-associacao">Conecte os Componentes</h2>
+        <h2 class="view-title" id="titulo-associacao">Conecte os Componentes</h2>
         <p class="lead">Relacione cada componente à sua função.</p>
       </div>
     </section>
 
     <section class="view" data-view="como-jogar" aria-labelledby="titulo-como-jogar" hidden>
       <div class="container">
-        <h2 id="titulo-como-jogar">Como jogar</h2>
+        <h2 class="view-title" id="titulo-como-jogar">Como jogar</h2>
         <p class="lead">Regras, controles e dicas para a sua jornada.</p>
       </div>
     </section>
@@ -147,6 +211,7 @@
   <!-- Scripts clássicos (sem módulos) para funcionar também abrindo o arquivo direto, sem servidor -->
   <script src="assets/js/utils.js" defer></script>
   <script src="assets/js/storage.js" defer></script>
+  <script src="assets/js/pixel.js" defer></script>
   <script src="assets/js/data.js" defer></script>
   <script src="assets/js/crossword-model.js" defer></script>
   <script src="assets/js/crossword.js" defer></script>

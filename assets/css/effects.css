@@ -1,0 +1,96 @@
+/* ==========================================================================
+   The Legend of CPU — effects.css
+   Animações suaves (seleção, acerto, erro, conclusão, entrada de telas).
+   Quem ativa "reduzir movimento" no sistema não vê nenhuma delas:
+   a regra global está em base.css e o JS também consulta essa preferência.
+   ========================================================================== */
+
+/* Entrada das telas */
+.view:not([hidden]) {
+  animation: view-in 0.35s ease both;
+}
+
+@keyframes view-in {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+/* Casa recebendo uma letra */
+.cell.is-filled .cell-input {
+  animation: letter-pop 0.18s ease-out;
+}
+
+@keyframes letter-pop {
+  from { transform: scale(0.6); opacity: 0.2; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+/* Caractere inválido: tremidinha rápida */
+.cell.is-invalid {
+  animation: shake 0.32s ease;
+  border-color: var(--red);
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-3px); }
+  50% { transform: translateX(3px); }
+  75% { transform: translateX(-2px); }
+}
+
+/* Palavra correta: onda de energia que percorre as casas em sequência */
+.cell.anim-correct {
+  animation: power-up 0.7s ease both;
+  animation-delay: calc(var(--i, 0) * 55ms);
+}
+
+@keyframes power-up {
+  0% { box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.35); }
+  40% { box-shadow: 0 0 0 3px var(--green), 0 0 18px rgba(70, 224, 138, 0.85); transform: translateY(-3px); }
+  100% { box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.35); transform: none; }
+}
+
+/* Palavra incorreta: aviso discreto */
+.cell.anim-wrong {
+  animation: wrong-blink 0.6s ease both;
+  animation-delay: calc(var(--i, 0) * 30ms);
+}
+
+@keyframes wrong-blink {
+  0%, 100% { border-color: inherit; }
+  30%, 70% { border-color: var(--red); box-shadow: 0 0 0 2px rgba(255, 107, 122, 0.6); }
+}
+
+/* Pista com erro após conferir */
+.clue-item.anim-wrong .clue-btn {
+  animation: shake 0.35s ease;
+}
+
+/* Brilho pulsante (núcleo, conquistas) */
+@keyframes glow-pulse {
+  0%, 100% { filter: drop-shadow(0 0 6px rgba(255, 197, 61, 0.35)); }
+  50% { filter: drop-shadow(0 0 18px rgba(255, 197, 61, 0.75)); }
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+@keyframes blink-caret {
+  50% { opacity: 0; }
+}
+
+@keyframes pop-in {
+  from { opacity: 0; transform: scale(0.85) translateY(10px); }
+  to { opacity: 1; transform: none; }
+}
+
+@keyframes slide-in {
+  from { opacity: 0; transform: translateX(24px); }
+  to { opacity: 1; transform: none; }
+}

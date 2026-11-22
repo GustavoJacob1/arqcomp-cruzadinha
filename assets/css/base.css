@@ -65,6 +65,12 @@ body {
   line-height: 1.55;
   color: var(--text);
   background-color: var(--bg-1);
+  /* Brilhos suaves + trilhas de placa de circuito (SVG embutido, sem arquivo externo) */
+  background-image:
+    radial-gradient(1100px 520px at 78% -12%, rgba(56, 225, 255, 0.11), transparent 62%),
+    radial-gradient(900px 480px at -12% 108%, rgba(255, 95, 207, 0.08), transparent 60%),
+    url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220' viewBox='0 0 220 220'%3E%3Cg fill='none' stroke='%2338e1ff' stroke-opacity='0.06' stroke-width='2'%3E%3Cpath d='M0 44h64l22 22h44'/%3E%3Cpath d='M130 66v54l22 22h68'/%3E%3Cpath d='M34 220v-54l32-32h34'/%3E%3Cpath d='M220 22h-44l-22-22'/%3E%3Cpath d='M100 134v44l-22 22v20'/%3E%3Cpath d='M176 220v-30l18-18'/%3E%3C/g%3E%3Cg fill='%2338e1ff' fill-opacity='0.09'%3E%3Ccircle cx='130' cy='66' r='4'/%3E%3Ccircle cx='100' cy='134' r='4'/%3E%3Ccircle cx='64' cy='44' r='3'/%3E%3Ccircle cx='194' cy='172' r='3'/%3E%3C/g%3E%3C/svg%3E");
+  background-attachment: fixed, fixed, scroll;
   overflow-x: hidden; /* nunca rolar a página inteira na horizontal */
 }
 

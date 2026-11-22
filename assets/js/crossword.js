@@ -99,7 +99,9 @@
     window.addEventListener('resize', U.debounce(fitBoard, 120));
     if (window.ResizeObserver) new ResizeObserver(U.debounce(fitBoard, 60)).observe(dom.scroll);
     LCPU.on('view:change', function (detail) {
-      if (detail.view === 'cruzadinha') window.requestAnimationFrame(fitBoard);
+      if (detail.view !== 'cruzadinha') return;
+      fitBoard(); // já com a tela visível: evita o "pulo" de tamanho
+      window.requestAnimationFrame(fitBoard);
     });
 
     LCPU.emit('crossword:ready', { model: state.model, report: state.report });
@@ -221,16 +223,23 @@
     var styles = window.getComputedStyle(dom.scroll);
     var gap = parseFloat(window.getComputedStyle(dom.board).columnGap) || 0;
     var availW = dom.scroll.clientWidth - parseFloat(styles.paddingLeft) - parseFloat(styles.paddingRight);
-    var narrow = window.matchMedia('(max-width: 720px)').matches;
+    var narrow = window.matchMedia('(max-width: 860px)').matches;
     var size = Math.floor((availW - gap * (model.cols - 1)) / model.cols);
     if (!narrow) {
       // no computador, o tabuleiro inteiro cabe na altura da janela
-      var availH = window.innerHeight - 260;
+      // (descontando cabeçalho fixo, pista ativa e moldura)
+      var availH = window.innerHeight - 210;
       size = Math.min(size, Math.floor((availH - gap * (model.rows - 1)) / model.rows));
     }
-    // mínimo de 28px para continuar fácil de tocar; se não couber, o tabuleiro rola por dentro
-    size = U.clamp(size, 28, 46);
+    // mínimo de 28px (30px no computador) para continuar fácil de tocar;
+    // se não couber, o tabuleiro rola por dentro da moldura, nunca a página inteira
+    size = U.clamp(size, narrow ? 28 : 30, 46);
     dom.board.style.setProperty('--cell', size + 'px');
+    // Avisa quando o tabuleiro é maior que a tela e precisa ser arrastado
+    var overflowing = dom.scroll.scrollWidth > dom.scroll.clientWidth + 1;
+    dom.scroll.classList.toggle('is-overflowing', overflowing);
+    var hint = U.$('#board-scroll-hint');
+    if (hint) hint.hidden = !overflowing;
   }
 
   /* ------------------------------------------------------------------------

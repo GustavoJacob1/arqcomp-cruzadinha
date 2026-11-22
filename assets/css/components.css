@@ -1,0 +1,264 @@
+/* ==========================================================================
+   The Legend of CPU — components.css
+   Peças reutilizáveis com o mesmo acabamento em todo o site:
+   botões "de fliperama", painéis com cantoneiras de HUD, selos, chips,
+   barras de progresso e pixel art.
+   ========================================================================== */
+
+/* ---------- Botões ---------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 10px 18px;
+  font-weight: 800;
+  line-height: 1.2;
+  letter-spacing: 0.01em;
+  text-align: center;
+  text-decoration: none;
+  border: 2px solid transparent;
+  border-radius: 10px;
+  cursor: pointer;
+  user-select: none;
+  transition: transform 0.12s, box-shadow 0.12s, background-color 0.15s, border-color 0.15s;
+}
+
+.btn .pixel-icon {
+  width: 1.15em;
+  height: 1.15em;
+}
+
+.btn:active {
+  transform: translateY(3px);
+}
+
+.btn-primary {
+  color: #1b1300;
+  background: linear-gradient(180deg, #ffd769 0%, #ffb21f 100%);
+  border-color: #ffe7a8;
+  box-shadow: 0 4px 0 #a86b00, 0 10px 22px rgba(255, 178, 31, 0.22);
+}
+
+.btn-primary:hover {
+  background: linear-gradient(180deg, #ffe08a 0%, #ffbb38 100%);
+  box-shadow: 0 5px 0 #a86b00, 0 12px 26px rgba(255, 178, 31, 0.3);
+  transform: translateY(-1px);
+}
+
+.btn-primary:active {
+  box-shadow: 0 1px 0 #a86b00;
+  transform: translateY(3px);
+}
+
+.btn-secondary {
+  color: var(--text);
+  background: linear-gradient(180deg, var(--bg-4), var(--bg-3));
+  border-color: var(--line-strong);
+  box-shadow: 0 4px 0 #080d1c;
+}
+
+.btn-secondary:hover {
+  border-color: var(--cyan);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 0 #080d1c;
+}
+
+.btn-secondary:active {
+  box-shadow: 0 1px 0 #080d1c;
+  transform: translateY(3px);
+}
+
+.btn-ghost {
+  color: var(--cyan);
+  background: rgba(56, 225, 255, 0.06);
+  border-color: rgba(56, 225, 255, 0.45);
+}
+
+.btn-ghost:hover {
+  background: rgba(56, 225, 255, 0.14);
+}
+
+.btn-danger {
+  color: #fff;
+  background: linear-gradient(180deg, #ff7a88, #e0485a);
+  border-color: #ffb0b8;
+  box-shadow: 0 4px 0 #7a1724;
+}
+
+.btn-danger:active {
+  box-shadow: 0 1px 0 #7a1724;
+}
+
+.btn-lg {
+  min-height: 52px;
+  padding: 13px 26px;
+  font-size: 1.08rem;
+}
+
+.btn-sm {
+  min-height: 36px;
+  padding: 6px 12px;
+  font-size: 0.9rem;
+}
+
+.btn[disabled],
+.btn[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ---------- Painéis com cantoneiras de HUD ---------- */
+.panel {
+  position: relative;
+  padding: 18px;
+  background: linear-gradient(180deg, rgba(26, 37, 71, 0.94), rgba(18, 26, 51, 0.94));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+
+.hud-corners {
+  position: relative;
+}
+
+.hud-corners::before {
+  content: "";
+  position: absolute;
+  inset: 5px;
+  pointer-events: none;
+  opacity: 0.6;
+  background:
+    linear-gradient(var(--cyan), var(--cyan)) top left / 12px 2px no-repeat,
+    linear-gradient(var(--cyan), var(--cyan)) top left / 2px 12px no-repeat,
+    linear-gradient(var(--cyan), var(--cyan)) top right / 12px 2px no-repeat,
+    linear-gradient(var(--cyan), var(--cyan)) top right / 2px 12px no-repeat,
+    linear-gradient(var(--cyan), var(--cyan)) bottom left / 12px 2px no-repeat,
+    linear-gradient(var(--cyan), var(--cyan)) bottom left / 2px 12px no-repeat,
+    linear-gradient(var(--cyan), var(--cyan)) bottom right / 12px 2px no-repeat,
+    linear-gradient(var(--cyan), var(--cyan)) bottom right / 2px 12px no-repeat;
+}
+
+/* ---------- Selos e títulos ---------- */
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0 0 6px;
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.eyebrow::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  background: var(--cyan);
+  box-shadow: 0 0 10px var(--cyan);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 40px 0 16px;
+  font-size: 1.05rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.section-title::after {
+  content: "";
+  flex: 1;
+  height: 2px;
+  background: linear-gradient(90deg, var(--line-strong), transparent);
+}
+
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-dim);
+  background: var(--bg-3);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+.chip-gold {
+  color: #1b1300;
+  background: var(--gold);
+  border-color: #ffe7a8;
+}
+
+/* ---------- Barra de progresso segmentada ---------- */
+.progress {
+  position: relative;
+  height: 14px;
+  overflow: hidden;
+  background: var(--bg-0);
+  border: 1px solid var(--line-strong);
+  border-radius: 4px;
+}
+
+.progress-fill {
+  width: 0;
+  height: 100%;
+  background: linear-gradient(90deg, #2fd27a, var(--green));
+  box-shadow: 0 0 12px rgba(70, 224, 138, 0.5);
+  transition: width 0.6s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.progress::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: repeating-linear-gradient(90deg, transparent 0 11px, rgba(7, 11, 22, 0.85) 11px 13px);
+}
+
+.progress-cyan .progress-fill {
+  background: linear-gradient(90deg, #1fb5d6, var(--cyan));
+  box-shadow: 0 0 12px rgba(56, 225, 255, 0.45);
+}
+
+.progress-thin {
+  height: 8px;
+}
+
+/* ---------- Pixel art ---------- */
+.pixel-icon {
+  width: 1em;
+  height: 1em;
+  flex-shrink: 0;
+}
+
+.pixel-text {
+  display: block;
+  width: auto;
+  height: 100%;
+  overflow: visible;
+}
+
+.pixel-text-fill {
+  fill: currentColor;
+}
+
+.pixel-text-shadow {
+  fill: rgba(0, 0, 0, 0.55);
+}
+
+.pixel-sprite {
+  display: block;
+  width: 100%;
+  height: auto;
+}

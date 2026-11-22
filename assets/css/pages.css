@@ -1,0 +1,254 @@
+/* ==========================================================================
+   The Legend of CPU — pages.css
+   Tela inicial (herói, núcleo, mascote e missões) e tela "Como jogar".
+   ========================================================================== */
+
+/* ---------- Herói ---------- */
+.hero {
+  display: grid;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+  gap: 32px;
+  align-items: center;
+  padding: 8px 0;
+}
+
+.logo {
+  display: grid;
+  justify-items: start;
+  gap: 12px;
+  margin: 8px 0 20px;
+}
+
+.logo-line {
+  display: block;
+}
+
+.logo-small {
+  height: clamp(20px, 2.6vw, 32px);
+  color: var(--text-dim);
+}
+
+.logo-big {
+  height: clamp(80px, 12vw, 148px);
+  color: var(--gold);
+  animation: glow-pulse 4s ease-in-out infinite;
+}
+
+.logo-big .pixel-text-shadow {
+  fill: #b35f00;
+}
+
+.logo-sub {
+  height: clamp(14px, 2vw, 22px);
+  color: var(--cyan);
+}
+
+.hero .lead {
+  font-size: 1.1rem;
+}
+
+.hero-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin-top: 6px;
+}
+
+.hero-progress {
+  margin: 16px 0 0;
+  font-size: 0.92rem;
+  color: var(--text-mute);
+}
+
+/* Núcleo com 16 bits ao redor (um para cada fragmento) */
+.hero-art {
+  position: relative;
+  display: grid;
+  place-items: center;
+  min-height: 360px;
+}
+
+.core {
+  --size: min(320px, 72vw);
+  --r: calc(var(--size) * 0.45); /* raio do anel de bits (comprimento absoluto) */
+  position: relative;
+  width: var(--size);
+  aspect-ratio: 1;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at 50% 46%, #fff6d6 0 5%, #ffc53d 9%, rgba(255, 140, 0, 0.35) 30%, rgba(56, 225, 255, 0.12) 54%, transparent 69%);
+}
+
+.core::before {
+  content: "";
+  position: absolute;
+  inset: 9%;
+  border: 2px dashed rgba(56, 225, 255, 0.45);
+  border-radius: 50%;
+  animation: spin 50s linear infinite;
+}
+
+.core::after {
+  content: "";
+  position: absolute;
+  inset: 22%;
+  border: 1px solid rgba(255, 197, 61, 0.35);
+  border-radius: 50%;
+}
+
+.core-bit {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 14px;
+  height: 14px;
+  margin: -7px 0 0 -7px;
+  background: var(--bg-4);
+  border: 2px solid var(--line-strong);
+  transform: rotate(calc(var(--i) * 22.5deg)) translateY(calc(var(--r) * -1)) rotate(calc(var(--i) * -22.5deg));
+  transition: background-color 0.4s, box-shadow 0.4s, border-color 0.4s;
+}
+
+.core-bit.is-on {
+  background: var(--green);
+  border-color: #c9ffe0;
+  box-shadow: 0 0 12px var(--green);
+}
+
+.mascot {
+  position: absolute;
+  right: 2%;
+  bottom: 0;
+  width: clamp(72px, 9vw, 104px);
+  animation: float 3.2s ease-in-out infinite;
+  filter: drop-shadow(0 8px 0 rgba(0, 0, 0, 0.35));
+}
+
+.speech {
+  position: absolute;
+  right: clamp(84px, 11vw, 128px);
+  bottom: 54px;
+  max-width: 240px;
+  margin: 0;
+  padding: 10px 12px;
+  font-size: 0.9rem;
+  line-height: 1.4;
+  background: var(--bg-3);
+  border: 2px solid var(--line-strong);
+  border-radius: 10px;
+  box-shadow: 0 6px 0 rgba(0, 0, 0, 0.3);
+}
+
+.speech::after {
+  content: "";
+  position: absolute;
+  right: -10px;
+  bottom: 14px;
+  border-top: 8px solid transparent;
+  border-bottom: 8px solid transparent;
+  border-left: 10px solid var(--line-strong);
+}
+
+.speech strong {
+  color: var(--gold);
+}
+
+/* ---------- Missões ---------- */
+.quest-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.quest-card {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 18px;
+  color: var(--text);
+  text-decoration: none;
+  background: linear-gradient(180deg, var(--bg-3), var(--bg-2));
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  transition: transform 0.15s, border-color 0.15s, box-shadow 0.15s;
+}
+
+.quest-card:hover {
+  border-color: var(--cyan);
+  box-shadow: 0 12px 26px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(56, 225, 255, 0.3);
+  transform: translateY(-3px);
+}
+
+.quest-icon {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  font-size: 28px;
+  color: var(--gold);
+  background: var(--bg-0);
+  border: 1px solid var(--line-strong);
+  border-radius: 10px;
+}
+
+.quest-card:nth-child(2) .quest-icon { color: var(--cyan); }
+.quest-card:nth-child(3) .quest-icon { color: var(--magenta); }
+.quest-card:nth-child(4) .quest-icon { color: var(--green); }
+
+.quest-title {
+  font-size: 1.05rem;
+  font-weight: 800;
+}
+
+.quest-desc {
+  margin: 0;
+  font-size: 0.92rem;
+  color: var(--text-dim);
+}
+
+.quest-status {
+  margin-top: auto;
+  padding-top: 6px;
+  font-size: 0.85rem;
+  color: var(--text-mute);
+}
+
+.quest-tag {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+}
+
+/* ---------- Responsivo ---------- */
+@media (max-width: 960px) {
+  .hero {
+    grid-template-columns: 1fr;
+    gap: 8px;
+  }
+
+  .hero-art {
+    min-height: 300px;
+  }
+
+  .quest-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .quest-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-art {
+    min-height: 260px;
+  }
+
+  .speech {
+    right: 80px;
+    bottom: 40px;
+    max-width: 180px;
+    font-size: 0.82rem;
+  }
+}

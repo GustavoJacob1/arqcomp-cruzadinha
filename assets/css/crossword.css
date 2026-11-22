@@ -26,14 +26,34 @@
 
 /* ---------- Pista ativa ---------- */
 .active-clue {
+  position: sticky;
+  top: 70px; /* logo abaixo do cabeçalho fixo */
+  z-index: 10;
   display: flex;
   align-items: center;
   gap: 12px;
   padding: 12px 14px;
-  background: var(--bg-2);
-  border: 1px solid var(--line);
-  border-left: 4px solid var(--cyan);
+  background: linear-gradient(180deg, #1d2a52, #151f3e);
+  border: 1px solid var(--line-strong);
+  border-left: 5px solid var(--cyan);
   border-radius: var(--radius);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.4);
+}
+
+.active-clue[data-dir="V"] {
+  border-left-color: var(--magenta);
+}
+
+.active-clue[data-dir="V"] .active-clue-dir {
+  color: var(--magenta);
+}
+
+.active-clue[data-status="correct"] {
+  border-left-color: var(--green);
+}
+
+.active-clue[data-status="incorrect"] {
+  border-left-color: var(--red);
 }
 
 .active-clue-main {
@@ -101,19 +121,79 @@
   cursor: not-allowed;
 }
 
-/* ---------- Tabuleiro ---------- */
+/* ---------- Tabuleiro: um artefato tecnológico com moldura, rebites e placa ---------- */
 .board-frame {
-  padding: 10px;
-  background: var(--bg-0);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
+  position: relative;
+  margin-top: 14px;
+  padding: 26px 14px 14px;
+  background:
+    radial-gradient(ellipse at 50% 35%, rgba(56, 225, 255, 0.09), transparent 65%),
+    linear-gradient(180deg, #0a1124, #070b16);
+  border: 2px solid #2b3f78;
+  border-radius: 16px;
+  box-shadow:
+    0 0 0 4px #0a1022,
+    0 0 0 6px #22356a,
+    0 22px 44px rgba(0, 0, 0, 0.55),
+    inset 0 0 44px rgba(56, 225, 255, 0.07);
+  transition: border-color 0.6s, box-shadow 0.6s;
+}
+
+/* Rebites dourados nos quatro cantos */
+.board-frame::before {
+  content: "";
+  position: absolute;
+  inset: 7px;
+  pointer-events: none;
+  background:
+    radial-gradient(circle, #ffd769 0 2.5px, #7a5200 3px 4px, transparent 4.5px) top left / 10px 10px no-repeat,
+    radial-gradient(circle, #ffd769 0 2.5px, #7a5200 3px 4px, transparent 4.5px) top right / 10px 10px no-repeat,
+    radial-gradient(circle, #ffd769 0 2.5px, #7a5200 3px 4px, transparent 4.5px) bottom left / 10px 10px no-repeat,
+    radial-gradient(circle, #ffd769 0 2.5px, #7a5200 3px 4px, transparent 4.5px) bottom right / 10px 10px no-repeat;
+}
+
+/* Placa com o nome do painel */
+.board-plate {
+  position: absolute;
+  top: -16px;
+  left: 50%;
+  z-index: 2;
+  padding: 7px 14px;
+  color: var(--gold);
+  background: linear-gradient(180deg, #2a3d75, #1a2850);
+  border: 2px solid #3d5294;
+  border-radius: 6px;
+  box-shadow: 0 4px 0 #080d1c;
+  transform: translateX(-50%);
+}
+
+.board-plate [data-pixel-text] {
+  display: block;
+  height: 12px;
+}
+
+.board-frame.is-complete {
+  border-color: var(--gold);
+  box-shadow:
+    0 0 0 4px #0a1022,
+    0 0 0 6px #8a6410,
+    0 0 36px rgba(255, 197, 61, 0.35),
+    inset 0 0 44px rgba(255, 197, 61, 0.1);
 }
 
 .board-scroll {
   overflow: auto;
   padding: 4px;
-  overscroll-behavior: contain;
+  overscroll-behavior-x: contain;
   -webkit-overflow-scrolling: touch;
+  scrollbar-color: var(--line-strong) transparent;
+}
+
+.board-scroll-hint {
+  margin: 8px 0 0;
+  font-size: 0.82rem;
+  text-align: center;
+  color: var(--text-mute);
 }
 
 .board {
@@ -125,15 +205,19 @@
   gap: var(--gap);
   width: max-content;
   margin: 0 auto;
+  /* pontinhos marcando os encaixes vazios do painel */
+  background-image: radial-gradient(circle, rgba(56, 225, 255, 0.16) 1.4px, transparent 2px);
+  background-size: calc(var(--cell) + var(--gap)) calc(var(--cell) + var(--gap));
+  background-position: calc(var(--gap) / -2) calc(var(--gap) / -2);
 }
 
 .cell {
   position: relative;
-  background: #172449;
-  border: 1px solid #2f4683;
+  background: linear-gradient(180deg, #1d2c59, #152145);
+  border: 1px solid #34508f;
   border-radius: 5px;
-  box-shadow: inset 0 -3px 0 rgba(0, 0, 0, 0.35);
-  scroll-margin: 90px 16px 16px;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06), inset 0 -3px 0 rgba(0, 0, 0, 0.35);
+  scroll-margin: 150px 16px 16px;
   transition: background-color 0.15s, border-color 0.15s, box-shadow 0.15s;
 }
 
@@ -179,15 +263,23 @@
 
 /* Palavra selecionada */
 .cell.in-word {
-  background: #0f3a52;
+  background: linear-gradient(180deg, #12536f, #0d3b52);
   border-color: var(--cyan);
+  box-shadow: 0 0 10px rgba(56, 225, 255, 0.25), inset 0 -3px 0 rgba(0, 0, 0, 0.3);
+}
+
+.board[data-dir="V"] .cell.in-word {
+  background: linear-gradient(180deg, #4a1f5c, #351846);
+  border-color: var(--magenta);
+  box-shadow: 0 0 10px rgba(255, 95, 207, 0.25), inset 0 -3px 0 rgba(0, 0, 0, 0.3);
 }
 
 /* Casa ativa */
-.cell.is-active {
-  background: var(--gold);
+.cell.is-active,
+.board[data-dir="V"] .cell.is-active {
+  background: linear-gradient(180deg, #ffe08a, #ffc53d);
   border-color: #fff1c2;
-  box-shadow: inset 0 -3px 0 rgba(120, 80, 0, 0.35);
+  box-shadow: 0 0 14px rgba(255, 197, 61, 0.55), inset 0 -3px 0 rgba(120, 80, 0, 0.35);
 }
 
 .cell.is-active .cell-input {
@@ -234,6 +326,11 @@
   border-right: 5px solid transparent;
   border-top: 6px solid var(--gold);
   z-index: 3;
+}
+
+/* Palavra do cruzamento (a outra direção da casa ativa) ganha um contorno discreto */
+.clue-item.is-cross .clue-num {
+  text-decoration: underline dotted;
 }
 
 /* Resultado da conferência nas casas (o resultado definitivo fica nas pistas) */
@@ -293,17 +390,28 @@
   max-height: calc(100vh - 104px);
   padding: 14px;
   overflow-y: auto;
-  background: var(--bg-2);
+  background: linear-gradient(180deg, rgba(26, 37, 71, 0.95), rgba(18, 26, 51, 0.95));
   border: 1px solid var(--line);
   border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  scrollbar-color: var(--line-strong) transparent;
 }
 
 .clue-group-title {
+  display: flex;
+  align-items: center;
+  gap: 8px;
   margin: 0 0 8px;
+  padding-bottom: 6px;
   font-size: 0.92rem;
-  letter-spacing: 0.08em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
-  color: var(--text-dim);
+  color: var(--cyan);
+  border-bottom: 1px solid var(--line);
+}
+
+#clues-v-title {
+  color: var(--magenta);
 }
 
 .clue-list {
@@ -358,6 +466,13 @@
 .clue-item.is-active .clue-btn {
   background: rgba(56, 225, 255, 0.12);
   border-color: var(--cyan);
+  box-shadow: inset 4px 0 0 var(--cyan);
+}
+
+#clues-V .clue-item.is-active .clue-btn {
+  background: rgba(255, 95, 207, 0.12);
+  border-color: var(--magenta);
+  box-shadow: inset 4px 0 0 var(--magenta);
 }
 
 .clue-item.is-cross .clue-btn {
@@ -431,12 +546,9 @@
 }
 
 @media (max-width: 860px) {
-  /* No celular a pista ativa acompanha a rolagem, logo acima do tabuleiro */
+  /* No celular o cabeçalho não é fixo: a pista ativa gruda no topo da tela */
   .active-clue {
-    position: sticky;
     top: 0;
-    z-index: 10;
-    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.45);
   }
 
   .cell {
@@ -446,19 +558,41 @@
 
 @media (max-width: 520px) {
   .board-frame {
-    padding: 4px;
+    padding: 22px 4px 6px;
+    border-radius: 12px;
   }
 
   .board-scroll {
     padding: 2px;
   }
 
+  /* Pista ativa em duas linhas: cabeçalho + botões em cima, texto inteiro embaixo */
   .active-clue {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "head actions"
+      "text text";
+    align-items: center;
+    gap: 6px 8px;
     padding: 10px;
-    gap: 8px;
+  }
+
+  .active-clue-main {
+    display: contents;
+  }
+
+  .active-clue-head {
+    grid-area: head;
+    margin: 0;
+  }
+
+  .active-clue-actions {
+    grid-area: actions;
   }
 
   .active-clue-text {
+    grid-area: text;
     font-size: 0.95rem;
   }
 

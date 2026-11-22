@@ -15,8 +15,9 @@
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(9, 14, 30, 0.92);
+  background: rgba(8, 12, 26, 0.9);
   border-bottom: 1px solid var(--line);
+  box-shadow: 0 1px 0 rgba(56, 225, 255, 0.08), 0 8px 24px rgba(0, 0, 0, 0.35);
   backdrop-filter: blur(8px);
 }
 
@@ -52,13 +53,24 @@
 }
 
 .brand-title {
-  font-weight: 800;
-  letter-spacing: 0.02em;
+  font-size: 0.95rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--gold);
+  text-shadow: 2px 2px 0 #6b3d00;
 }
 
 .brand-sub {
-  font-size: 0.78rem;
-  color: var(--text-mute);
+  font-size: 0.68rem;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--cyan);
+}
+
+.brand:hover .brand-emblem {
+  animation: float 1.2s ease-in-out infinite;
 }
 
 /* ---------- Navegação ---------- */
@@ -78,10 +90,12 @@
 .main-nav a {
   display: block;
   padding: 8px 12px;
+  font-weight: 600;
   color: var(--text-dim);
   text-decoration: none;
   border-radius: var(--radius-sm);
   white-space: nowrap;
+  transition: color 0.15s, background-color 0.15s;
 }
 
 .main-nav a:hover {
@@ -91,8 +105,8 @@
 
 .main-nav a[aria-current="page"] {
   color: var(--text);
-  background: var(--bg-3);
-  box-shadow: inset 0 -2px 0 var(--cyan);
+  background: rgba(56, 225, 255, 0.1);
+  box-shadow: inset 0 -3px 0 var(--cyan);
 }
 
 /* ---------- Conteúdo ---------- */
@@ -106,9 +120,18 @@ main:focus {
   outline: none;
 }
 
-.view > .container > h1,
-.view > .container > h2 {
+.view-title {
   font-size: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem);
+  letter-spacing: 0.01em;
+}
+
+.view-title::after {
+  content: "";
+  display: block;
+  width: 64px;
+  height: 4px;
+  margin-top: 10px;
+  background: linear-gradient(90deg, var(--gold) 0 50%, var(--cyan) 50% 100%);
 }
 
 .lead {
@@ -156,5 +179,25 @@ main:focus {
 
   .main-nav a {
     padding: 8px 10px;
+  }
+}
+
+@media (max-width: 560px) {
+  /* Seis itens em uma grade 3x2: tudo visível, sem esconder nada na rolagem */
+  .main-nav {
+    overflow: visible;
+  }
+
+  .main-nav ul {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 4px;
+  }
+
+  .main-nav a {
+    padding: 8px 4px;
+    font-size: 0.92rem;
+    text-align: center;
+    background: rgba(26, 37, 71, 0.6);
   }
 }
