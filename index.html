@@ -13,6 +13,7 @@
   <link rel="stylesheet" href="assets/css/components.css">
   <link rel="stylesheet" href="assets/css/pages.css">
   <link rel="stylesheet" href="assets/css/crossword.css">
+  <link rel="stylesheet" href="assets/css/game.css">
   <link rel="stylesheet" href="assets/css/effects.css">
 </head>
 <body>
@@ -38,6 +39,12 @@
           <li><a href="#como-jogar" data-nav="como-jogar">Como jogar</a></li>
         </ul>
       </nav>
+      <!-- Liga/desliga os efeitos sonoros (preferência salva quando possível) -->
+      <button type="button" class="sound-toggle" id="sound-toggle" aria-pressed="true" aria-label="Som (efeitos sonoros)" data-sound="none" title="Som: ligado">
+        <span class="sound-icon" aria-hidden="true"></span>
+        <span class="sound-text">Som</span>
+        <span class="sound-state" id="sound-state" aria-hidden="true">ON</span>
+      </button>
     </div>
   </header>
 
@@ -108,6 +115,9 @@
             <span class="quest-status" id="quest-associacao">Rodadas de 6 pares</span>
           </a>
         </div>
+
+        <h2 class="section-title">Conquistas <span class="chip" id="achievements-count-home">0/10</span></h2>
+        <ul class="achievements-grid" data-achievements></ul>
       </div>
     </section>
 
@@ -117,6 +127,46 @@
           <h2 class="view-title" id="titulo-cruzadinha">Painel do Núcleo</h2>
           <p class="lead">Missão principal: restaure os 16 fragmentos de conhecimento preenchendo a cruzadinha.</p>
         </header>
+
+        <!-- Aviso quando o navegador não permite salvar -->
+        <p class="storage-warning" id="storage-warning" role="status" hidden>
+          Este navegador não está permitindo salvar o progresso (modo privado ou armazenamento bloqueado).
+          Você pode jogar normalmente, mas a partida não será guardada ao fechar a página.
+        </p>
+
+        <!-- HUD: tempo, pontos, progresso, registrador de bits e ações -->
+        <div class="hud hud-corners" id="hud">
+          <div class="hud-stat">
+            <span class="hud-icon" data-icon="clock"></span>
+            <span class="hud-label">Tempo</span>
+            <span class="hud-value" id="hud-time">00:00</span>
+          </div>
+          <div class="hud-stat">
+            <span class="hud-icon hud-icon-gem" data-icon="gem"></span>
+            <span class="hud-label">Pontos</span>
+            <span class="hud-value" id="hud-score">0</span>
+          </div>
+          <div class="hud-progress">
+            <div class="hud-progress-head">
+              <strong id="hud-correct">0 de 16 palavras corretas</strong>
+              <span id="hud-fill">Preenchimento: 0%</span>
+            </div>
+            <div class="progress" id="hud-bar" role="progressbar" aria-label="Palavras corretas" aria-valuemin="0" aria-valuemax="16" aria-valuenow="0" aria-valuetext="0 de 16 palavras corretas">
+              <div class="progress-fill" id="hud-bar-fill"></div>
+            </div>
+          </div>
+          <div class="bit-register" id="bit-register" role="img" aria-label="Registrador do núcleo: 0 de 16 bits ativos">
+            <span class="bit-register-label" aria-hidden="true">REG. DO NÚCLEO</span>
+            <span class="bit-register-bits" id="bit-register-bits" aria-hidden="true"></span>
+            <span class="bit-register-hex" id="bit-register-hex" aria-hidden="true">0x0000</span>
+          </div>
+          <div class="hud-actions">
+            <button type="button" class="btn btn-primary" id="btn-check" data-sound="none"><span data-icon="bits"></span>Conferir</button>
+            <button type="button" class="btn btn-secondary" id="btn-restart">Reiniciar</button>
+            <button type="button" class="btn btn-ghost" id="btn-help" aria-haspopup="dialog">Ajuda</button>
+          </div>
+        </div>
+        <div class="check-result" id="check-result" role="status" aria-live="polite"></div>
 
         <div class="crossword-layout">
           <div class="board-column">
@@ -193,8 +243,106 @@
 
     <section class="view" data-view="como-jogar" aria-labelledby="titulo-como-jogar" hidden>
       <div class="container">
-        <h2 class="view-title" id="titulo-como-jogar">Como jogar</h2>
-        <p class="lead">Regras, controles e dicas para a sua jornada.</p>
+        <header class="view-head">
+          <h2 class="view-title" id="titulo-como-jogar">Como jogar</h2>
+          <p class="lead">Tudo o que você precisa para restaurar o Núcleo — e estudar de verdade no caminho.</p>
+        </header>
+
+        <div class="guide">
+          <article class="panel hud-corners guide-card">
+            <h3><span class="guide-icon" data-icon="star"></span>Objetivo</h3>
+            <p>Preencha a cruzadinha com os <strong>16 conceitos</strong> de Arquitetura Computacional. Cada palavra confirmada acende um bit do <strong>Registrador do Núcleo</strong>. Com os 16 bits acesos (<code>0xFFFF</code>), o Reino de Silício volta a funcionar.</p>
+            <ol class="guide-steps">
+              <li>Escolha uma palavra tocando na <strong>pista</strong> ou numa <strong>casa</strong> do tabuleiro.</li>
+              <li>Digite as letras: o cursor avança sozinho na direção ativa (<strong>→</strong> horizontal, <strong>↓</strong> vertical).</li>
+              <li>Use <strong>Conferir</strong> quando quiser: o painel de pistas mostra quais palavras estão certas.</li>
+              <li>Corrija o que for preciso e confira de novo. Errar faz parte do estudo!</li>
+            </ol>
+          </article>
+
+          <article class="panel hud-corners guide-card guide-wide">
+            <h3><span class="guide-icon" data-icon="grid"></span>Controles</h3>
+            <div class="table-wrap">
+              <table class="controls-table">
+                <thead>
+                  <tr><th scope="col">Ação</th><th scope="col">Teclado</th><th scope="col">Toque / mouse</th></tr>
+                </thead>
+                <tbody>
+                  <tr><th scope="row">Escrever uma letra</th><td>Letras de A a Z (acentos e Ç viram letras simples)</td><td>Teclado do celular</td></tr>
+                  <tr><th scope="row">Andar pelas casas</th><td><kbd>←</kbd> <kbd>↑</kbd> <kbd>→</kbd> <kbd>↓</kbd></td><td>Tocar na casa</td></tr>
+                  <tr><th scope="row">Alternar horizontal/vertical num cruzamento</th><td><kbd>Espaço</kbd></td><td>Tocar de novo na casa ativa ou no botão <span aria-hidden="true">⇄</span> Alternar</td></tr>
+                  <tr><th scope="row">Próxima / anterior palavra</th><td><kbd>Enter</kbd> / <kbd>Shift</kbd> + <kbd>Enter</kbd></td><td>Botões <span aria-hidden="true">▶</span> e <span aria-hidden="true">◀</span> da pista ativa</td></tr>
+                  <tr><th scope="row">Apagar</th><td><kbd>Backspace</kbd> apaga e volta · <kbd>Delete</kbd> só apaga</td><td>Tecla de apagar do celular</td></tr>
+                  <tr><th scope="row">Início / fim da palavra</th><td><kbd>Home</kbd> / <kbd>End</kbd></td><td>—</td></tr>
+                  <tr><th scope="row">Sair do tabuleiro</th><td><kbd>Tab</kbd> (o foco nunca fica preso)</td><td>Tocar fora do tabuleiro</td></tr>
+                </tbody>
+              </table>
+            </div>
+          </article>
+
+          <article class="panel hud-corners guide-card">
+            <h3><span class="guide-icon" data-icon="bits"></span>Conferência</h3>
+            <ul class="legend">
+              <li><span class="clue-status" data-status="correct"><span class="clue-status-icon"></span><span>Correta</span></span> palavra completa e certa (as letras ficam verdes).</li>
+              <li><span class="clue-status" data-status="incorrect"><span class="clue-status-icon"></span><span>Incorreta</span></span> completa, mas com alguma letra errada.</li>
+              <li><span class="clue-status" data-status="incomplete"><span class="clue-status-icon"></span><span>Incompleta</span></span> ainda tem casas vazias.</li>
+            </ul>
+            <p>Como uma casa pode pertencer a duas palavras, o resultado definitivo aparece <strong>por palavra, no painel de pistas</strong>. As respostas nunca são reveladas. Se você editar uma palavra já conferida, ela volta a “não conferida” até a próxima conferência.</p>
+          </article>
+
+          <article class="panel hud-corners guide-card">
+            <h3><span class="guide-icon" data-icon="gem"></span>Pontuação</h3>
+            <ul>
+              <li><strong>+100</strong> por palavra, na primeira vez que ela for confirmada correta.</li>
+              <li><strong>Conferir nunca tira pontos.</strong> Teste suas hipóteses sem medo.</li>
+              <li>Ao concluir: <strong>+300</strong> de bônus e um <strong>bônus de tempo</strong> de até 500 (perde 1 ponto a cada 2 segundos de partida, nunca fica negativo).</li>
+              <li>Máximo: 2.400 pontos. O melhor resultado fica salvo como recorde.</li>
+            </ul>
+            <p>O cronômetro começa na primeira interação com o tabuleiro e pausa quando você troca de aba, abre outra área do site ou uma janela de ajuda.</p>
+          </article>
+
+          <article class="panel hud-corners guide-card">
+            <h3><span class="guide-icon" data-icon="lock"></span>Salvamento e reinício</h3>
+            <p>A partida é salva automaticamente neste navegador: letras, conferências, tempo e pontos. Ao voltar, você continua de onde parou.</p>
+            <p><strong>Reiniciar</strong> pede confirmação e apaga apenas a partida atual. Conquistas, recorde e a preferência de som continuam guardados.</p>
+            <p>Se o navegador bloquear o armazenamento (por exemplo, em modo privado), tudo funciona normalmente — só o progresso não fica guardado.</p>
+          </article>
+
+          <article class="panel hud-corners guide-card">
+            <h3><span class="guide-icon" data-icon="cards"></span>Áreas de estudo</h3>
+            <ul>
+              <li><a href="#flashcards">Inventário do Conhecimento</a>: flashcards com pergunta e explicação; marque “Já sei” ou “Preciso revisar”.</li>
+              <li><a href="#quiz">Desafio dos Circuitos</a>: quiz de múltipla escolha com explicação após cada resposta.</li>
+              <li><a href="#associacao">Conecte os Componentes</a>: ligue cada componente à sua função.</li>
+            </ul>
+            <p>As áreas de revisão ficam separadas da cruzadinha: você decide quando consultar.</p>
+          </article>
+
+          <article class="panel hud-corners guide-card">
+            <h3><span class="guide-icon" data-icon="soundOn"></span>Acessibilidade</h3>
+            <ul>
+              <li>Tudo funciona pelo teclado, com foco sempre visível.</li>
+              <li>Cada casa informa linha, coluna, número e direção para leitores de tela.</li>
+              <li>Resultados usam ícones e texto, não só cores.</li>
+              <li>Os sons são discretos, opcionais e sempre acompanhados de informação na tela.</li>
+              <li>Se o seu sistema pede menos movimento, as animações são desligadas.</li>
+            </ul>
+          </article>
+
+          <article class="panel hud-corners guide-card guide-wide">
+            <h3><span class="guide-icon" data-icon="trophy"></span>Conquistas <span class="chip" id="achievements-count-guide">0/10</span></h3>
+            <ul class="achievements-grid" data-achievements></ul>
+          </article>
+
+          <article class="panel hud-corners guide-card guide-wide">
+            <h3><span class="guide-icon" data-icon="scroll"></span>Sobre o conteúdo e a grade</h3>
+            <p>As pistas e explicações foram escritas para apoiar o estudo de Arquitetura Computacional. Confira sempre com o material oficial da disciplina.</p>
+            <p>Ao abrir a página, uma validação interna confere a cruzadinha:</p>
+            <ul class="integrity" id="integrity-report">
+              <li>Validação ainda não executada.</li>
+            </ul>
+          </article>
+        </div>
       </div>
     </section>
   </main>
@@ -205,6 +353,73 @@
     </div>
   </footer>
 
+  <!-- ===================== Janelas (dialog) ===================== -->
+
+  <!-- Ajuda rápida da cruzadinha -->
+  <dialog class="modal" id="dialog-help" aria-labelledby="dialog-help-title">
+    <form method="dialog" class="modal-inner">
+      <header class="modal-head">
+        <h2 id="dialog-help-title">Ajuda rápida</h2>
+        <button type="submit" class="icon-btn modal-close" value="close" aria-label="Fechar a ajuda"><span aria-hidden="true">✕</span></button>
+      </header>
+      <div class="modal-body">
+        <ol class="guide-steps">
+          <li><strong>Escolha uma palavra:</strong> toque numa pista ou numa casa.</li>
+          <li><strong>Digite:</strong> as letras avançam sozinhas na direção ativa (→ horizontal, ↓ vertical).</li>
+          <li><strong>Cruzamentos:</strong> toque de novo na casa, use o botão ⇄ ou a tecla Espaço para trocar a direção.</li>
+          <li><strong>Confira:</strong> o painel de pistas mostra ✓ correta, ✗ incorreta ou … incompleta. Conferir não tira pontos.</li>
+          <li><strong>Corrija à vontade:</strong> editar uma palavra faz ela voltar a “não conferida”.</li>
+        </ol>
+        <p class="modal-note">Teclado: setas navegam · <kbd>Enter</kbd>/<kbd>Shift</kbd>+<kbd>Enter</kbd> trocam de palavra · <kbd>Backspace</kbd> apaga e volta · <kbd>Tab</kbd> sai do tabuleiro.</p>
+      </div>
+      <footer class="modal-foot">
+        <a class="btn btn-ghost" href="#como-jogar" data-close-dialog>Guia completo</a>
+        <button type="submit" class="btn btn-primary" value="close">Entendi</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Confirmação genérica (usada pelo Reiniciar) -->
+  <dialog class="modal" id="dialog-confirm" aria-labelledby="dialog-confirm-title" aria-describedby="dialog-confirm-message">
+    <form method="dialog" class="modal-inner modal-small">
+      <header class="modal-head">
+        <h2 id="dialog-confirm-title">Tem certeza?</h2>
+      </header>
+      <div class="modal-body">
+        <p id="dialog-confirm-message"></p>
+      </div>
+      <footer class="modal-foot">
+        <button type="submit" class="btn btn-secondary" value="cancel" id="dialog-confirm-cancel">Cancelar</button>
+        <button type="submit" class="btn btn-danger" value="confirm" id="dialog-confirm-ok">Confirmar</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Vitória -->
+  <dialog class="modal modal-victory" id="dialog-victory" aria-labelledby="dialog-victory-title">
+    <canvas class="confetti" id="confetti" aria-hidden="true"></canvas>
+    <form method="dialog" class="modal-inner">
+      <header class="victory-head">
+        <div class="victory-mascot" data-sprite="byte" aria-hidden="true"></div>
+        <h2 class="victory-title" id="dialog-victory-title" data-pixel-text="NUCLEO RESTAURADO!">Núcleo restaurado!</h2>
+        <p class="victory-sub">Os 16 fragmentos voltaram ao lugar e o clock pulsa de novo no Reino de Silício.</p>
+      </header>
+      <div class="modal-body">
+        <dl class="victory-stats" id="victory-stats"></dl>
+        <h3 class="victory-subtitle">Fragmentos recuperados</h3>
+        <ul class="victory-words" id="victory-words"></ul>
+      </div>
+      <footer class="modal-foot">
+        <button type="submit" class="btn btn-ghost" value="close">Ver o tabuleiro</button>
+        <a class="btn btn-secondary" href="#flashcards" data-close-dialog>Continuar estudando</a>
+        <button type="submit" class="btn btn-primary" value="replay">Jogar novamente</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Notificações rápidas (conquistas, avisos) -->
+  <div class="toasts" id="toasts" aria-live="polite" aria-relevant="additions"></div>
+
   <!-- Região lida por leitores de tela para anúncios dinâmicos -->
   <div id="sr-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
 
@@ -212,9 +427,14 @@
   <script src="assets/js/utils.js" defer></script>
   <script src="assets/js/storage.js" defer></script>
   <script src="assets/js/pixel.js" defer></script>
+  <script src="assets/js/audio.js" defer></script>
+  <script src="assets/js/ui.js" defer></script>
   <script src="assets/js/data.js" defer></script>
   <script src="assets/js/crossword-model.js" defer></script>
   <script src="assets/js/crossword.js" defer></script>
+  <script src="assets/js/achievements.js" defer></script>
+  <script src="assets/js/game.js" defer></script>
+  <script src="assets/js/pages.js" defer></script>
   <script src="assets/js/app.js" defer></script>
 </body>
 </html>

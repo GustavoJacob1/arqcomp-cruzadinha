@@ -181,7 +181,7 @@
           statusText
         ]);
         var answerLabel = U.el('span', { class: 'clue-answer', hidden: true, text: concept ? concept.label : '' });
-        var button = U.el('button', { type: 'button', class: 'clue-btn', 'data-word': word.id }, [
+        var button = U.el('button', { type: 'button', class: 'clue-btn', 'data-word': word.id, 'data-sound': 'select' }, [
           U.el('span', { class: 'clue-num', 'aria-hidden': 'true', text: String(word.number) }),
           U.el('span', { class: 'clue-body' }, [
             U.el('span', { class: 'clue-text', text: word.clue }),
@@ -529,6 +529,7 @@
       if (state.activeCell !== cell.index) selectCell(cell.index, { focus: false });
       try { input.setSelectionRange(0, input.value.length); } catch (err) { /* campo sem seleção */ }
       dom.board.classList.add('has-focus');
+      LCPU.emit('crossword:interaction', { index: cell.index }); // inicia o cronômetro na 1ª interação
     });
 
     input.addEventListener('blur', function () {
