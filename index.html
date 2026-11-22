@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="The Legend of CPU — A Cruzada dos Bits: cruzadinha e atividades interativas para estudar Arquitetura Computacional.">
+  <meta name="theme-color" content="#0c1224">
+  <meta name="color-scheme" content="dark">
+  <title>The Legend of CPU — A Cruzada dos Bits</title>
+  <link rel="icon" href="assets/img/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="assets/css/base.css">
+  <link rel="stylesheet" href="assets/css/layout.css">
+</head>
+<body>
+  <a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
+
+  <!-- Cabeçalho com marca e navegação principal -->
+  <header class="site-header">
+    <div class="header-inner">
+      <a class="brand" href="#inicio" aria-label="The Legend of CPU — página inicial">
+        <span class="brand-emblem" aria-hidden="true"></span>
+        <span class="brand-text">
+          <span class="brand-title">The Legend of CPU</span>
+          <span class="brand-sub">A Cruzada dos Bits</span>
+        </span>
+      </a>
+      <nav class="main-nav" aria-label="Navegação principal">
+        <ul>
+          <li><a href="#inicio" data-nav="inicio">Início</a></li>
+          <li><a href="#cruzadinha" data-nav="cruzadinha">Cruzadinha</a></li>
+          <li><a href="#flashcards" data-nav="flashcards">Flashcards</a></li>
+          <li><a href="#quiz" data-nav="quiz">Quiz</a></li>
+          <li><a href="#associacao" data-nav="associacao">Associação</a></li>
+          <li><a href="#como-jogar" data-nav="como-jogar">Como jogar</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="conteudo" tabindex="-1">
+    <!-- Cada <section class="view"> é uma "tela". O app.js mostra uma por vez conforme o #hash da URL. -->
+
+    <section class="view" data-view="inicio" aria-labelledby="titulo-inicio">
+      <div class="container">
+        <h1 id="titulo-inicio">The Legend of CPU — A Cruzada dos Bits</h1>
+        <p class="lead">O Reino de Silício parou. Um surto de Ruído embaralhou os bits do Núcleo e apagou os 16 Fragmentos de Conhecimento que mantinham tudo funcionando. Decifre as pistas, preencha o Painel do Núcleo e devolva o clock a este mundo.</p>
+        <p><a class="btn btn-primary" href="#cruzadinha">Começar a cruzada</a></p>
+      </div>
+    </section>
+
+    <section class="view" data-view="cruzadinha" aria-labelledby="titulo-cruzadinha" hidden>
+      <div class="container">
+        <h2 id="titulo-cruzadinha">Painel do Núcleo</h2>
+        <p class="lead">Missão principal: restaure os 16 fragmentos preenchendo a cruzadinha.</p>
+      </div>
+    </section>
+
+    <section class="view" data-view="flashcards" aria-labelledby="titulo-flashcards" hidden>
+      <div class="container">
+        <h2 id="titulo-flashcards">Inventário do Conhecimento</h2>
+        <p class="lead">Flashcards com perguntas na frente e explicações no verso.</p>
+      </div>
+    </section>
+
+    <section class="view" data-view="quiz" aria-labelledby="titulo-quiz" hidden>
+      <div class="container">
+        <h2 id="titulo-quiz">Desafio dos Circuitos</h2>
+        <p class="lead">Questões de múltipla escolha que testam o entendimento dos conceitos.</p>
+      </div>
+    </section>
+
+    <section class="view" data-view="associacao" aria-labelledby="titulo-associacao" hidden>
+      <div class="container">
+        <h2 id="titulo-associacao">Conecte os Componentes</h2>
+        <p class="lead">Relacione cada componente à sua função.</p>
+      </div>
+    </section>
+
+    <section class="view" data-view="como-jogar" aria-labelledby="titulo-como-jogar" hidden>
+      <div class="container">
+        <h2 id="titulo-como-jogar">Como jogar</h2>
+        <p class="lead">Regras, controles e dicas para a sua jornada.</p>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <p>Projeto acadêmico de Arquitetura Computacional · Conteúdo de apoio ao estudo: confira sempre com o material oficial da disciplina.</p>
+    </div>
+  </footer>
+
+  <!-- Região lida por leitores de tela para anúncios dinâmicos -->
+  <div id="sr-announcer" class="sr-only" aria-live="polite" aria-atomic="true"></div>
+
+  <!-- Scripts clássicos (sem módulos) para funcionar também abrindo o arquivo direto, sem servidor -->
+  <script src="assets/js/utils.js" defer></script>
+  <script src="assets/js/storage.js" defer></script>
+  <script src="assets/js/app.js" defer></script>
+</body>
+</html>
