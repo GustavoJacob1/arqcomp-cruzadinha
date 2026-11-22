@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="assets/css/pages.css">
   <link rel="stylesheet" href="assets/css/crossword.css">
   <link rel="stylesheet" href="assets/css/game.css">
+  <link rel="stylesheet" href="assets/css/activities.css">
   <link rel="stylesheet" href="assets/css/effects.css">
 </head>
 <body>
@@ -220,24 +221,176 @@
       </div>
     </section>
 
+    <!-- ===================== Flashcards ===================== -->
     <section class="view" data-view="flashcards" aria-labelledby="titulo-flashcards" hidden>
       <div class="container">
-        <h2 class="view-title" id="titulo-flashcards">Inventário do Conhecimento</h2>
-        <p class="lead">Flashcards com perguntas na frente e explicações no verso.</p>
+        <header class="view-head">
+          <h2 class="view-title" id="titulo-flashcards">Inventário do Conhecimento</h2>
+          <p class="lead">Cada card é um item do seu inventário. Leia a pergunta, pense na resposta, vire o card e diga se já domina o conceito ou se precisa revisar.</p>
+        </header>
+
+        <div class="fc-layout">
+          <div class="fc-main">
+            <div class="fc-toolbar">
+              <div class="segmented" role="group" aria-label="Filtrar cards">
+                <button type="button" class="seg-btn" data-filter="all" aria-pressed="true">Todos <span class="seg-count" id="fc-count-all">16</span></button>
+                <button type="button" class="seg-btn" data-filter="review" aria-pressed="false">Preciso revisar <span class="seg-count" id="fc-count-review">0</span></button>
+                <button type="button" class="seg-btn" data-filter="unseen" aria-pressed="false">Não marcados <span class="seg-count" id="fc-count-unseen">16</span></button>
+              </div>
+              <button type="button" class="btn btn-ghost btn-sm" id="fc-shuffle">Embaralhar</button>
+            </div>
+
+            <p class="fc-position" id="fc-position" aria-live="polite">Card 1 de 16</p>
+
+            <div class="fc-card-area" id="fc-card-area">
+              <!-- O card vira com clique/toque; pelo teclado, use o botão "Mostrar resposta" -->
+              <div class="flashcard" id="flashcard">
+                <div class="flashcard-inner">
+                  <div class="flashcard-face flashcard-front" id="fc-front">
+                    <span class="fc-tag" id="fc-group">Categoria</span>
+                    <p class="fc-question" id="fc-question"></p>
+                    <span class="fc-flip-hint" aria-hidden="true">Toque para virar ↻</span>
+                  </div>
+                  <div class="flashcard-face flashcard-back" id="fc-back" tabindex="-1" aria-hidden="true">
+                    <span class="fc-tag fc-tag-answer" id="fc-title">Conceito</span>
+                    <p class="fc-answer" id="fc-answer"></p>
+                    <p class="fc-tip"><strong>Para lembrar:</strong> <span id="fc-tip"></span></p>
+                  </div>
+                </div>
+              </div>
+              <div class="fc-status" id="fc-status" aria-live="polite"></div>
+            </div>
+
+            <div class="fc-empty panel" id="fc-empty" hidden>
+              <p id="fc-empty-text">Nenhum card neste filtro.</p>
+              <button type="button" class="btn btn-secondary" id="fc-show-all">Ver todos os cards</button>
+            </div>
+
+            <div class="fc-controls">
+              <button type="button" class="btn btn-secondary" id="fc-prev"><span aria-hidden="true">◀</span> Anterior</button>
+              <button type="button" class="btn btn-ghost" id="fc-flip" aria-controls="flashcard">Mostrar resposta</button>
+              <button type="button" class="btn btn-secondary" id="fc-next">Próximo <span aria-hidden="true">▶</span></button>
+            </div>
+            <div class="fc-mark">
+              <button type="button" class="btn btn-review" id="fc-review" data-sound="none"><span aria-hidden="true">↺</span> Preciso revisar</button>
+              <button type="button" class="btn btn-known" id="fc-known" data-sound="none"><span aria-hidden="true">✓</span> Já sei</button>
+            </div>
+          </div>
+
+          <aside class="fc-side panel hud-corners" aria-labelledby="fc-side-title">
+            <h3 id="fc-side-title"><span class="guide-icon" data-icon="cards"></span>Inventário</h3>
+            <p class="fc-stats" id="fc-stats">0 de 16 dominados</p>
+            <div class="progress progress-cyan" role="progressbar" id="fc-bar" aria-label="Conceitos dominados" aria-valuemin="0" aria-valuemax="16" aria-valuenow="0">
+              <div class="progress-fill" id="fc-progress"></div>
+            </div>
+            <ul class="inventory" id="fc-inventory" aria-label="Itens do inventário"></ul>
+            <p class="fc-legend"><span class="inv-dot is-known"></span> já sei <span class="inv-dot is-review"></span> revisar <span class="inv-dot"></span> não marcado</p>
+            <button type="button" class="btn btn-ghost btn-sm" id="fc-reset">Limpar marcações</button>
+          </aside>
+        </div>
       </div>
     </section>
 
+    <!-- ===================== Quiz ===================== -->
     <section class="view" data-view="quiz" aria-labelledby="titulo-quiz" hidden>
       <div class="container">
-        <h2 class="view-title" id="titulo-quiz">Desafio dos Circuitos</h2>
-        <p class="lead">Questões de múltipla escolha que testam o entendimento dos conceitos.</p>
+        <header class="view-head">
+          <h2 class="view-title" id="titulo-quiz">Desafio dos Circuitos</h2>
+          <p class="lead">Situações do dia a dia que pedem entendimento, não decoreba. Cada questão tem uma única alternativa correta e uma explicação.</p>
+        </header>
+
+        <div class="quiz panel hud-corners" id="quiz">
+          <div class="quiz-intro" id="quiz-intro">
+            <div class="quiz-intro-art" data-sprite="byte" aria-hidden="true"></div>
+            <div>
+              <p class="quiz-intro-text"><strong id="quiz-total">14 questões</strong> de múltipla escolha sobre processamento, memórias, barramentos e núcleos.</p>
+              <ul class="quiz-facts">
+                <li>Alternativas embaralhadas a cada rodada.</li>
+                <li>Explicação depois de cada resposta.</li>
+                <li>No final, refaça só as questões que errou.</li>
+                <li>Atalhos: teclas <kbd>1</kbd> a <kbd>4</kbd> escolhem a alternativa.</li>
+              </ul>
+              <p class="quiz-best" id="quiz-best">Melhor resultado: ainda não registrado.</p>
+              <button type="button" class="btn btn-primary btn-lg" id="quiz-start" data-sound="select">Iniciar desafio</button>
+            </div>
+          </div>
+
+          <div class="quiz-question" id="quiz-question" hidden>
+            <div class="quiz-head">
+              <span id="quiz-counter">Questão 1 de 14</span>
+              <span id="quiz-mode" class="chip">Rodada completa</span>
+              <span id="quiz-score">0 acertos</span>
+            </div>
+            <div class="progress progress-cyan progress-thin" aria-hidden="true"><div class="progress-fill" id="quiz-progress"></div></div>
+            <h3 class="quiz-text" id="quiz-text" tabindex="-1"></h3>
+            <div class="quiz-options" id="quiz-options" role="group" aria-labelledby="quiz-text"></div>
+            <div class="quiz-feedback" id="quiz-feedback" hidden>
+              <p class="quiz-verdict" id="quiz-verdict"></p>
+              <p class="quiz-explain" id="quiz-explain"></p>
+              <a class="quiz-review-link" id="quiz-review-link" href="#flashcards">Revisar este conceito no Inventário</a>
+            </div>
+            <div class="quiz-live sr-only" id="quiz-live" aria-live="polite"></div>
+            <div class="quiz-actions">
+              <button type="button" class="btn btn-primary" id="quiz-next" hidden>Próxima questão <span aria-hidden="true">▶</span></button>
+            </div>
+          </div>
+
+          <div class="quiz-result" id="quiz-result" hidden>
+            <div class="quiz-rank" id="quiz-rank" aria-hidden="true">S</div>
+            <h3 class="quiz-result-title" id="quiz-result-title" tabindex="-1">Resultado</h3>
+            <p class="quiz-result-msg" id="quiz-result-msg"></p>
+            <div class="quiz-result-actions">
+              <button type="button" class="btn btn-primary" id="quiz-retry-wrong">Refazer as erradas</button>
+              <button type="button" class="btn btn-secondary" id="quiz-restart">Recomeçar desafio</button>
+            </div>
+            <h4 class="quiz-review-title">Revisão das questões</h4>
+            <ol class="quiz-review-list" id="quiz-review-list"></ol>
+          </div>
+        </div>
       </div>
     </section>
 
+    <!-- ===================== Associação ===================== -->
     <section class="view" data-view="associacao" aria-labelledby="titulo-associacao" hidden>
       <div class="container">
-        <h2 class="view-title" id="titulo-associacao">Conecte os Componentes</h2>
-        <p class="lead">Relacione cada componente à sua função.</p>
+        <header class="view-head">
+          <h2 class="view-title" id="titulo-associacao">Conecte os Componentes</h2>
+          <p class="lead">Religue os circuitos do reino: escolha um componente e depois a função que ele cumpre (ou o contrário). Funciona com mouse, toque e teclado.</p>
+        </header>
+
+        <div class="match panel hud-corners" id="match">
+          <div class="match-head">
+            <p class="match-stats">
+              <span class="chip" id="match-round">Rodada 1</span>
+              <span id="match-pairs">0 de 6 pares</span> ·
+              <span id="match-attempts">0 tentativas</span>
+            </p>
+            <button type="button" class="btn btn-ghost btn-sm" id="match-new">Nova rodada (embaralhar)</button>
+          </div>
+
+          <div class="match-board">
+            <div class="match-col">
+              <h3 class="match-col-title" id="match-left-title">Componentes</h3>
+              <ul class="match-list" id="match-left" aria-labelledby="match-left-title"></ul>
+            </div>
+            <div class="match-col">
+              <h3 class="match-col-title" id="match-right-title">Funções</h3>
+              <ul class="match-list" id="match-right" aria-labelledby="match-right-title"></ul>
+            </div>
+          </div>
+
+          <p class="match-feedback" id="match-feedback" role="status" aria-live="polite"></p>
+
+          <div class="match-done" id="match-done" hidden>
+            <p class="match-done-text" id="match-done-text" tabindex="-1"></p>
+            <button type="button" class="btn btn-primary" id="match-next" data-sound="select">Próxima rodada <span aria-hidden="true">▶</span></button>
+          </div>
+
+          <h3 class="match-exp-title">Pares conectados</h3>
+          <ol class="match-explanations" id="match-explanations">
+            <li class="match-exp-empty">Os pares que você conectar aparecem aqui, com uma explicação curta.</li>
+          </ol>
+        </div>
       </div>
     </section>
 
@@ -434,6 +587,9 @@
   <script src="assets/js/crossword.js" defer></script>
   <script src="assets/js/achievements.js" defer></script>
   <script src="assets/js/game.js" defer></script>
+  <script src="assets/js/flashcards.js" defer></script>
+  <script src="assets/js/quiz.js" defer></script>
+  <script src="assets/js/matching.js" defer></script>
   <script src="assets/js/pages.js" defer></script>
   <script src="assets/js/app.js" defer></script>
 </body>

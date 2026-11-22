@@ -58,6 +58,31 @@
     });
   }
 
+  /* Status das áreas de estudo nos cartões de missão */
+  function updateFlashcardsQuest(c) {
+    var el = U.$('#quest-flashcards');
+    if (!el || !c) return;
+    el.textContent = c.known === c.total
+      ? '✓ Inventário completo: ' + c.total + ' de ' + c.total
+      : c.known + ' de ' + c.total + ' dominados · ' + c.review + ' para revisar';
+  }
+
+  function updateQuizQuest(best) {
+    var el = U.$('#quest-quiz');
+    if (!el) return;
+    el.textContent = best === null || best === undefined
+      ? LCPU.QUIZ.length + ' questões esperando por você'
+      : 'Melhor resultado: ' + best + '%';
+  }
+
+  function updateMatchingQuest(stats) {
+    var el = U.$('#quest-associacao');
+    if (!el || !stats) return;
+    el.textContent = stats.rounds
+      ? U.plural(stats.rounds, 'rodada concluída', 'rodadas concluídas') + ' · ' + U.plural(stats.perfect, 'perfeita', 'perfeitas')
+      : 'Rodadas de 6 pares';
+  }
+
   function renderIntegrity() {
     var list = U.$('#integrity-report');
     if (!list) return;
@@ -94,6 +119,13 @@
     LCPU.on('view:change', function (detail) {
       if (detail.view === 'inicio') rotateTip();
     });
+
+    if (LCPU.Flashcards) updateFlashcardsQuest(LCPU.Flashcards.progress());
+    if (LCPU.Quiz) updateQuizQuest(LCPU.Quiz.best);
+    if (LCPU.Matching) updateMatchingQuest(LCPU.Matching.stats);
+    LCPU.on('flashcards:progress', updateFlashcardsQuest);
+    LCPU.on('quiz:result', function (r) { updateQuizQuest(r.best); });
+    LCPU.on('matching:progress', updateMatchingQuest);
   }
 
   LCPU.register('pages', init);
